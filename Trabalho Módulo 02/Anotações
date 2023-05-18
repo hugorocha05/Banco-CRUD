@@ -1,0 +1,2 @@
+- Ao entrar pela primeira vez no sistema, dar somente ao usuário a opção de adicionar uma transação
+- Criar uma funcionalidade extra (criativa) - Habilidade de pesquisar por transações específicas utilizando um dos dados como agrupador (nome, data, categoria, valor) de modo que ao escolher o dado nome e escrever 'Hugo' o programa só irá mostrar as transações com o nome relacionado ('Hugo')
