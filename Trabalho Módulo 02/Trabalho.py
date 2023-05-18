@@ -31,7 +31,7 @@ def extrato(agrupar=None):
     if agrupar == None:
         for i in range(len(matriz)):
             soma_total += float(matriz[i][3])
-            print(f"{i+1})\nNome: {matriz[i][0]}\nData: {matriz[i][1]}\nCategoria: {matriz[i][2]}\nValor: R$ {float(matriz[i][3]) :.2f}\n")
+            print(f"{i+1})\nNome: {matriz[i][0]}\nData: {matriz[i][1]}\nCategoria: {matriz[i][2]}\nValor: R$ {float(matriz[i][3]) :,.2f}\n")
         print()
 
 
@@ -62,88 +62,134 @@ def extrato(agrupar=None):
         for i in range(len(valor)):
             soma_total += float(valor[i][3])
             soma_categoria += float(valor[i][3])
-            print(f"Nome: {valor[i][0]}\nData: {valor[i][1]}\nCategoria: {valor[i][2]}\nValor: R$ {float(valor[i][3]) :.2f}\n")
+            print(f"Nome: {valor[i][0]}\nData: {valor[i][1]}\nCategoria: {valor[i][2]}\nValor: R$ {float(valor[i][3]) :,.2f}\n")
                 
-        print(f"Extrato {agrupar} '{chave}': R$ {soma_categoria :.2f}\n")
+        print(f"Extrato {agrupar} '{chave}': R$ {soma_categoria :,.2f}\n")
         print(f"{'-' * 47}\n")
 
-    print(f"Extrato total das transações: R$ {soma_total :.2f}\n")
-    print(f"{'=' * 47}")
+    print(f"Extrato total das transações: R$ {soma_total :,.2f}\n")
+    print(f"{'=' * 47}\n")
 
-while True:  # Pergunta qual serviço ousuário deseja realisar e ramifica o código para a situação adequada
-    opcao = int(input("""[1] Adicionar transação
+    return matriz
+
+def apagar_tudo():
+    with open('Trabalho Módulo 02\Dados.csv', 'w') as w:  # f = open('Dados.csv', 'a')
+        w.write("")
+
+while True:  # Pergunta qual serviço o usuário deseja realisar e ramifica o código para a situação adequada
+    opcao = input("""[1] Adicionar transação
 [2] Ver transações passadas
 [3] Atualizar transações passadas
 [4] Deletar transações passadas
 [5] Sair do programa
-Que tipo de serviço você deseja realizar?: """))
+Que tipo de serviço você deseja realizar?: """)
     
 
 
-    if opcao == 1:  # Sistema de adição de transações
+    if opcao == '1':  # Sistema de adição de transações
         while True:
-            tipo_transacao = int(input("""\n[1] Entrada de Dinheiro
+            tipo_transacao = input("""\n[1] Entrada de Dinheiro
 [2] Saída de Dinheiro
-Que tipo de transação você deseja adicionar?: """))
+Que tipo de transação você deseja adicionar?: """)
 
-            if tipo_transacao == 1:  # Entrada de dinheiro
+            if tipo_transacao == '1':  # Entrada de dinheiro
                 nome, data, categoria, valor  = pedir_dados()
                 guardar_dados(nome, data, categoria, valor)
+                print("Transação adicionada com sucesso\n")
                 break
 
-            elif tipo_transacao == 2:  # Saída de dinheiro
+            elif tipo_transacao == '2':  # Saída de dinheiro
                 nome, data, categoria, valor  = pedir_dados()
                 valor = -valor
                 guardar_dados(nome, data, categoria, valor)
+                print("Transação adicionada com sucesso\n")
                 break
             else:
                 print("Escolha inválida, por favor tente novamente.\n")
-        break
 
 
-
-    elif opcao == 2:
+    elif opcao == '2':
         while True:
-            tipo_extrato = int(input("""\n[1] Mostrar extrato em ordem de adição das transações
+            tipo_extrato = input("""\n[1] Mostrar extrato em ordem de adição das transações
 [2] Mostrar extrato agrupado por nome
 [3] Mostrar extrato agrupado por data
 [4] Mostrar extrato agrupado por categoria
-Que tipo de extrato você quer?: """))
+Que tipo de extrato você quer?: """)
             
-            if tipo_extrato == 1:
+            if tipo_extrato == '1':
                 extrato()
                 break
-            elif tipo_extrato == 2:
+            elif tipo_extrato == '2':
                 extrato(agrupar='nome')
                 break
-            elif tipo_extrato == 3:
+            elif tipo_extrato == '3':
                 extrato(agrupar='data')
                 break
-            elif tipo_extrato == 4:
+            elif tipo_extrato == '4':
                 extrato(agrupar='categoria')
                 break
             else:
                 print("Escolha inválida, por favor tente novamente.\n")
+
+
+    elif opcao == '3':
+        matriz = extrato()
+
+        opcoes = []
+        for i in range(len(matriz)):
+            opcoes.append(str(i + 1))
+
+
+        while True:
+            escolha = input("""Digite o número da transação que você deseja atualizar: """)
+
+            if escolha not in opcoes:
+                print("Escolha inválida, por favor tente novamente.\n")
+            else:
+                apagar_tudo()
+                
+                index = int(escolha) - 1
+
+                matriz[index][0], matriz[index][1], matriz[index][2], matriz[index][3] = pedir_dados()
+
+                for transacao in matriz:
+                    guardar_dados(transacao[0], transacao[1], transacao[2], transacao[3])
+
+                print("Transação atualizada com sucesso!\n")
+
+                break
+
+
+    elif opcao == '4':
+        matriz = extrato()
+
+        opcoes = []
+        for i in range(len(matriz)):
+            opcoes.append(str(i + 1))
+
+
+        while True:
+            escolha = input("""Digite o número da transação que você deseja deletar: """)
+
+            if escolha not in opcoes:
+                print("Escolha inválida, por favor tente novamente.\n")
+            else:
+                apagar_tudo()
+
+                matriz.pop(int(escolha) - 1)
+
+                for transacao in matriz:
+                    guardar_dados(transacao[0], transacao[1], transacao[2], transacao[3])
+
+                print("Transação deletada com sucesso!\n")
+
+                break
+
+
+    elif opcao == '5':
+        print()
         break
 
 
-
-    elif opcao == 3:
-        # Criar sistema de atualização de transações passadas
-        pass
-
-
-
-    elif opcao == 4:
-        # Criar sistema de deleção de transações passadas
-        pass
-    
-
-
-    elif opcao == 5:
-        break
-
-
-    
     else:
         print("Escolha inválida, por favor tente novamente.\n")
