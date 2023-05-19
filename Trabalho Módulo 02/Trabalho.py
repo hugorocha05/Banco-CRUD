@@ -1,11 +1,17 @@
 import os
 os.system('cls')
 
-def pedir_dados():
+def pedir_dados(tipo):
     nome = input("\nDigite o nome da pessoa relacionada a essa transação: ").title().strip()
     data = input("Digite a data em que a transação ocorreu (no formato dd/mm/aaaa): ").strip()
     categoria = input("Digite a categoria dessa transação: ").title().strip()
-    valor = float(input("Digite o valor da transação: R$ "))
+
+    if tipo == 'entrada':
+        valor = float(input("Digite o valor da transação: R$ "))
+    elif tipo == 'saida':
+        valor = float(input("Digite o valor da transação: R$ -"))
+    elif tipo == 'atualizar':
+        valor = float(input("Digite o valor da transação (com um '-' na frente para significar saída de dinheiro): R$ "))
     print()
 
     return nome, data, categoria, valor
@@ -77,7 +83,7 @@ def apagar_tudo():
         w.write("")
 
 while True:  # Pergunta qual serviço o usuário deseja realisar e ramifica o código para a situação adequada
-    opcao = input("""[1] Adicionar transação
+    opcao = input("""\n[1] Adicionar transação
 [2] Ver transações passadas
 [3] Atualizar transações passadas
 [4] Deletar transações passadas
@@ -93,19 +99,19 @@ Que tipo de serviço você deseja realizar?: """)
 Que tipo de transação você deseja adicionar?: """)
 
             if tipo_transacao == '1':  # Entrada de dinheiro
-                nome, data, categoria, valor  = pedir_dados()
-                guardar_dados(nome, data, categoria, valor)
-                print("Transação adicionada com sucesso\n")
-                break
+                nome, data, categoria, valor  = pedir_dados('entrada')
 
             elif tipo_transacao == '2':  # Saída de dinheiro
-                nome, data, categoria, valor  = pedir_dados()
+                nome, data, categoria, valor = pedir_dados('saida')
                 valor = -valor
-                guardar_dados(nome, data, categoria, valor)
-                print("Transação adicionada com sucesso\n")
-                break
+
             else:
-                print("Escolha inválida, por favor tente novamente.\n")
+                print("\nEscolha inválida, por favor tente novamente.")
+                continue
+
+            guardar_dados(nome, data, categoria, valor)
+            print("Transação adicionada com sucesso!")
+            break
 
 
     elif opcao == '2':
@@ -117,20 +123,19 @@ Que tipo de transação você deseja adicionar?: """)
 Que tipo de extrato você quer?: """)
             
             if tipo_extrato == '1':
-                extrato()
-                break
+                agrupar = None
             elif tipo_extrato == '2':
-                extrato(agrupar='nome')
-                break
+                agrupar = 'nome'
             elif tipo_extrato == '3':
-                extrato(agrupar='data')
-                break
+                agrupar = 'data'
             elif tipo_extrato == '4':
-                extrato(agrupar='categoria')
-                break
+                agrupar = 'categoria'
             else:
-                print("Escolha inválida, por favor tente novamente.\n")
+                print("\nEscolha inválida, por favor tente novamente.")
+                continue
 
+            extrato(agrupar)
+            break
 
     elif opcao == '3':
         matriz = extrato()
@@ -144,13 +149,13 @@ Que tipo de extrato você quer?: """)
             escolha = input("""Digite o número da transação que você deseja atualizar: """)
 
             if escolha not in opcoes:
-                print("Escolha inválida, por favor tente novamente.\n")
+                print("\nEscolha inválida, por favor tente novamente.\n\n\n")
             else:
                 apagar_tudo()
                 
                 index = int(escolha) - 1
 
-                matriz[index][0], matriz[index][1], matriz[index][2], matriz[index][3] = pedir_dados()
+                matriz[index][0], matriz[index][1], matriz[index][2], matriz[index][3] = pedir_dados('atualizar')
 
                 for transacao in matriz:
                     guardar_dados(transacao[0], transacao[1], transacao[2], transacao[3])
@@ -181,7 +186,7 @@ Que tipo de extrato você quer?: """)
                 for transacao in matriz:
                     guardar_dados(transacao[0], transacao[1], transacao[2], transacao[3])
 
-                print("Transação deletada com sucesso!\n")
+                print("\nTransação deletada com sucesso!\n")
 
                 break
 
@@ -192,4 +197,4 @@ Que tipo de extrato você quer?: """)
 
 
     else:
-        print("Escolha inválida, por favor tente novamente.\n")
+        print("\nEscolha inválida, por favor tente novamente.\n")
